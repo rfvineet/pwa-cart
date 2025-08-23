@@ -1,12 +1,17 @@
 import { openDB, DBSchema, IDBPDatabase } from "idb";
-import { Book } from "../types";
+import { Bill, Book } from "../types";
 
 interface BookStoreDB extends DBSchema {
   books: { key: any; value: Book };
+  bills: {
+    key: string;
+    value: Bill;
+    indexes: { "by-synced": number };
+  };
 }
 
 async function initDB(): Promise<IDBPDatabase<BookStoreDB>> {
-  return await openDB<BookStoreDB>("book-store-db", 1, {
+  return await openDB<BookStoreDB>("book-store-db", 2, {
     upgrade(db) {
       db.createObjectStore("books", { keyPath: "id" });
     },

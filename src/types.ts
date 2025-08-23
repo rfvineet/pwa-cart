@@ -4,6 +4,16 @@ export interface Book {
   author: string;
   price: number;
 }
+
 export interface CartItem extends Book {
   quantity: number;
+}
+
+export interface Bill {
+  id: string;
+  username: string;
+  items: CartItem[];
+  total: number;
+  date: number;
+  synced: boolean;
 }
