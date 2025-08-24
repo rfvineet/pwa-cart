@@ -3,10 +3,10 @@ import autoTable from "jspdf-autotable";
 import { CartItem } from "../types";
 
 export function generateBillPDF(cartItems: CartItem[], username: string) {
-  // 1. Create a blank PDF document
+
   const doc = new jsPDF();
 
-  // 2. Add the header with titles, date, and customer name
+ 
   doc
     .setFontSize(22)
     .setFont("helvetica", "bold")
@@ -16,7 +16,7 @@ export function generateBillPDF(cartItems: CartItem[], username: string) {
   doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 36);
   doc.text(`Customer: ${username}`, 14, 42);
 
-  // 3. Prepare the data for the table
+  
   const tableHead = [
     ["Item Name", "Author", "Qty", "Unit Price ($)", "Subtotal ($)"],
   ];
@@ -28,27 +28,27 @@ export function generateBillPDF(cartItems: CartItem[], username: string) {
     (item.price * item.quantity).toFixed(2),
   ]);
 
-  // 4. Draw the table onto the PDF
+
   autoTable(doc, {
     head: tableHead,
     body: tableBody,
-    startY: 50, // Start the table below the header
+    startY: 50, 
     theme: "striped",
-    headStyles: { fillColor: [22, 160, 133] }, // A teal color for the header
+    headStyles: { fillColor: [22, 160, 133] }, 
   });
 
-  // 5. Calculate and add the grand total
+
   const grandTotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
-  const finalY = (doc as any).lastAutoTable.finalY; // Find where the table ended
+  const finalY = (doc as any).lastAutoTable.finalY; 
 
   doc
     .setFontSize(14)
     .setFont("helvetica", "bold")
     .text(`Grand Total: $${grandTotal.toFixed(2)}`, 14, finalY + 15);
 
-  // 6. Save the file and prompt the user to download it
+
   doc.save(`bill-${Date.now()}.pdf`);
 }

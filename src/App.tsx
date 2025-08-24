@@ -35,9 +35,6 @@ function App() {
     billId: string;
   } | null>(null);
 
-  // --- DATA SYNC LOGIC ---
-
-  // Fetches the latest book list from the server
   const syncBooks = useCallback(async () => {
     if (!navigator.onLine) return;
     setIsLoading(true);
@@ -57,7 +54,6 @@ function App() {
     setIsLoading(false);
   }, []);
 
-  // Sends any unsynced bills to the server
   const syncBills = useCallback(async () => {
     if (!navigator.onLine) {
       console.log("Offline: Bill sync paused.");
@@ -88,15 +84,12 @@ function App() {
           }
         } catch (error) {
           console.error("Bill sync failed, will retry later.", error);
-          break; // Stop on a network error to retry the batch next time
+          break;
         }
       }
     }
   }, []);
 
-  // --- LIFECYCLE & EVENT HANDLERS ---
-
-  // Main effect for initialization and setting up timers/listeners
   useEffect(() => {
     async function loadInitialData() {
       const localBooks = await getLocalBooks();
@@ -104,7 +97,7 @@ function App() {
       setIsLoading(false);
     }
     loadInitialData();
-    syncBooks(); // Fetch books on first load
+    syncBooks();
 
     const handleOnline = () => {
       setIsOnline(true);
@@ -114,8 +107,7 @@ function App() {
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
 
-    const billSyncInterval = setInterval(syncBills, 10 * 60 * 1000); // 10 minutes
-
+    const billSyncInterval = setInterval(syncBills, 10 * 60 * 1000);
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
@@ -127,9 +119,6 @@ function App() {
     localStorage.setItem("shoppingCart", JSON.stringify(cart));
   }, [cart]);
 
-  // --- USER ACTION FUNCTIONS ---
-
-  // Final step in the checkout process
   const handlePlaceOrder = async () => {
     if (cart.length === 0 || username.trim() === "") return;
 
@@ -147,11 +136,9 @@ function App() {
     await saveBillToLocalDB(newBill);
     console.log("Bill saved to IndexedDB");
 
-    // Immediately check if the bill was saved
     const allUnsyncedBills = await getUnsyncedBills();
     console.log("Unsynced bills after saving:", allUnsyncedBills);
 
-    // Store order details for success screen
     setLastOrder({
       items: [...cart],
       username: username,
@@ -194,9 +181,6 @@ function App() {
     setLastOrder(null);
   };
 
-  // --- JSX RENDER ---
-
-  // Success Screen Component
   if (showSuccessScreen && lastOrder) {
     return (
       <div className="bg-gray-50 min-h-screen">
@@ -217,7 +201,6 @@ function App() {
 
         <main className="container mx-auto p-6 max-w-2xl">
           <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-            {/* Success Icon */}
             <div className="mb-6">
               <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
                 <svg
@@ -236,16 +219,14 @@ function App() {
               </div>
             </div>
 
-            {/* Success Message */}
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Order Placed Successfully! 🎉
+              Order Placed Successfully!
             </h2>
             <p className="text-gray-600 mb-6">
               Thank you, {lastOrder.username}! Your order has been placed and
               saved locally.
             </p>
 
-            {/* Order Summary */}
             <div className="bg-gray-50 rounded-lg p-6 mb-6">
               <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
               <div className="space-y-2">
@@ -268,7 +249,6 @@ function App() {
               </p>
             </div>
 
-            {/* Action Buttons */}
             <div className="space-y-4">
               <button
                 onClick={handleDownloadPDF}
@@ -284,14 +264,13 @@ function App() {
               </button>
             </div>
 
-            {/* Sync Status */}
             {isOnline ? (
               <p className="text-sm text-green-600 mt-4">
-                ✅ Your order will be synced to the server automatically
+                Your order will be synced to the server automatically
               </p>
             ) : (
               <p className="text-sm text-orange-600 mt-4">
-                📱 Order saved locally. Will sync when connection is restored.
+                Order saved locally. Will sync when connection is restored.
               </p>
             )}
           </div>

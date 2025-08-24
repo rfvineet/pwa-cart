@@ -16,7 +16,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   cartItems,
   username,
 }) => {
-  // If the 'isOpen' prop is false, the component renders nothing.
   if (!isOpen) {
     return null;
   }
@@ -27,16 +26,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   );
 
   return (
-    // Modal Overlay: A fixed-position div that covers the entire screen.
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      {/* Modal Content: The white box in the middle. */}
       <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4">Confirm Order</h2>
         <p className="mb-2">
           <strong>Customer:</strong> {username}
         </p>
 
-        {/* Order Summary: A scrollable list of items. */}
         <div className="max-h-60 overflow-y-auto border-t border-b py-2 my-2">
           {cartItems.map((item) => (
             <div
@@ -54,13 +50,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           ))}
         </div>
 
-        {/* Total Price */}
+        <div className="border-t border-b py-2 my-2"></div>
         <div className="text-xl font-bold flex justify-between mt-4">
           <span>Total:</span>
           <span>${total.toFixed(2)}</span>
         </div>
 
-        {/* Action Buttons */}
         <div className="mt-6 flex justify-end space-x-4">
           <button
             onClick={onClose}
