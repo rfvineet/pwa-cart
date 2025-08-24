@@ -43,25 +43,25 @@ export async function getUnsyncedBills(): Promise<Bill[]> {
   const db = await dbPromise;
   console.log("Getting unsynced bills...");
 
-  // First, let's get ALL bills to see what's in the database
+  // Get ALL bills to see what's in the database
   const allBills = await db.getAll("bills");
   console.log("All bills in database:", allBills);
 
-  // Then try to get unsynced bills using the index
-  const bills = await db.getAllFromIndex("bills", "by-synced", 0);
-  console.log("Found unsynced bills:", bills);
+  // Filter bills with synced: false directly (more reliable than index)
+  const unsyncedBills = allBills.filter((bill) => bill.synced === false);
+  console.log("Manual filter for unsynced bills:", unsyncedBills);
 
-  // Also try getting bills with synced: false directly
-  const unsyncedBillsManual = allBills.filter((bill) => bill.synced === false);
-  console.log("Manual filter for unsynced bills:", unsyncedBillsManual);
-
-  return bills;
+  return unsyncedBills;
 }
 export async function markBillAsSynced(billId: string): Promise<void> {
   const db = await dbPromise;
   const bill = await db.get("bills", billId);
+  console.log("Marking bill as synced:", billId, "Found bill:", bill);
   if (bill) {
     bill.synced = true;
     await db.put("bills", bill);
+    console.log("Bill marked as synced successfully:", billId);
+  } else {
+    console.error("Bill not found for syncing:", billId);
   }
 }
