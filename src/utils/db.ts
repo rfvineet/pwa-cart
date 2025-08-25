@@ -65,3 +65,9 @@ export async function markBillAsSynced(billId: string): Promise<void> {
     console.error("Bill not found for syncing:", billId);
   }
 }
+export async function deleteBillFromLocalDB(billId: string): Promise<void> {
+  const db = await dbPromise;
+  console.log("Deleting bill from IndexedDB:", billId);
+  await db.delete("bills", billId);
+  console.log("Bill deleted successfully:", billId);
+}

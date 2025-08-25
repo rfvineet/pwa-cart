@@ -4,7 +4,7 @@ import {
   saveBooksToLocalDB,
   saveBillToLocalDB,
   getUnsyncedBills,
-  markBillAsSynced,
+  deleteBillFromLocalDB,
 } from "./utils/db";
 import { generateBillPDF } from "./utils/pdfGenerator";
 import { Book, CartItem } from "./types";
@@ -73,8 +73,11 @@ function App() {
             body: JSON.stringify(bill),
           });
           if (response.ok) {
-            await markBillAsSynced(bill.id);
             console.log(`Bill ${bill.id} synced successfully.`);
+            await deleteBillFromLocalDB(bill.id);
+            console.log(
+              `Bill ${bill.id} synced and deleted from local storage.`
+            );
           } else {
             console.error(
               "Server responded with error:",
