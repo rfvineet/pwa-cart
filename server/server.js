@@ -8,7 +8,7 @@ app.use(cors());
 app.use(json());
 
 const uri =
-  "mongodb+srv://vineet:vineetbs@cluster0.1m4rt5f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+  "url";
 if (!uri) {
   throw new Error("MONGO_URI not found in .env file");
 }
